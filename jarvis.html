@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JARVIS CLEAN HOLOGRAM</title>
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#000;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  color:#00eaff;
+}
+
+/* deep dark hologram space */
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at center,rgba(0,234,255,.20),transparent 34%),
+    radial-gradient(circle at 25% 25%,rgba(0,90,255,.10),transparent 35%),
+    radial-gradient(circle at 75% 75%,rgba(0,255,220,.09),transparent 35%),
+    linear-gradient(rgba(0,234,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,234,255,.025) 1px,transparent 1px);
+  background-size:100% 100%,100% 100%,100% 100%,48px 48px,48px 48px;
+  z-index:-5;
+}
+
+/* faint monitor scan texture */
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:linear-gradient(transparent 50%,rgba(0,234,255,.03) 51%);
+  background-size:100% 7px;
+  z-index:-4;
+  pointer-events:none;
+}
+
+/* startup */
+.boot{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:50;
+  animation:bootFade 4.8s forwards;
+}
+
+.boot h1{
+  margin:0;
+  font-size:88px;
+  letter-spacing:20px;
+  font-weight:300;
+  text-shadow:0 0 55px #00eaff;
+}
+
+.boot p{
+  margin-top:18px;
+  font-size:15px;
+  letter-spacing:8px;
+  opacity:.65;
+}
+
+@keyframes bootFade{
+  0%,80%{opacity:1}
+  100%{opacity:0;visibility:hidden}
+}
+
+/* title only */
+.title{
+  position:absolute;
+  top:32px;
+  width:100%;
+  text-align:center;
+  font-size:54px;
+  font-weight:300;
+  letter-spacing:18px;
+  text-shadow:0 0 45px #00eaff;
+}
+
+/* main hologram */
+.stage{
+  position:absolute;
+  left:50%;
+  top:53%;
+  transform:translate(-50%,-50%);
+  width:760px;
+  height:760px;
+}
+
+/* mist cloud */
+.mist{
+  position:absolute;
+  inset:-55px;
+  border-radius:50%;
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(0,234,255,.16),
+      transparent,
+      rgba(0,255,220,.13),
+      transparent,
+      rgba(140,255,255,.12),
+      transparent
+    );
+  filter:blur(28px);
+  opacity:.38;
+  animation:mistIdle 22s linear infinite;
+}
+
+.mist.active{
+  animation:mistIdle 4s linear infinite, mistBurst 1.3s ease-out;
+  opacity:1;
+}
+
+@keyframes mistIdle{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes mistBurst{
+  0%{transform:scale(.88);opacity:.15}
+  35%{transform:scale(1.12);opacity:1}
+  100%{transform:scale(1);opacity:.8}
+}
+
+/* rotating rings */
+.ring,.ring2,.ring3,.ring4,.ring5,.ring6,.ring7{
+  position:absolute;
+  border-radius:50%;
+}
+
+.ring{
+  inset:0;
+  border:2px solid rgba(0,234,255,.68);
+  box-shadow:0 0 45px #00eaff;
+  animation:spin 22s linear infinite;
+}
+
+.ring2{
+  inset:55px;
+  border:2px dashed rgba(0,234,255,.70);
+  animation:spin 14s linear infinite reverse;
+}
+
+.ring3{
+  inset:120px;
+  border:1px solid rgba(0,234,255,.45);
+  animation:spin 9s linear infinite;
+}
+
+.ring4{
+  inset:185px;
+  border:2px dotted rgba(160,255,255,.70);
+  animation:spin 6s linear infinite reverse;
+}
+
+.ring5{
+  inset:255px;
+  border:1px solid rgba(180,255,255,.85);
+  box-shadow:0 0 26px rgba(0,234,255,.75);
+  animation:pulseRing 2.6s ease-in-out infinite;
+}
+
+.ring6{
+  inset:310px;
+  border:1px solid rgba(0,234,255,.55);
+  animation:spin 3.5s linear infinite;
+}
+
+.ring7{
+  inset:350px;
+  border:1px solid rgba(200,255,255,.45);
+  animation:pulseRing 1.8s ease-in-out infinite reverse;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes pulseRing{
+  0%,100%{transform:scale(1);opacity:.7}
+  50%{transform:scale(1.08);opacity:.35}
+}
+
+/* liquid hologram orb */
+.orb{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:285px;
+  height:285px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 28%,rgba(255,255,255,.6),transparent 10%),
+    radial-gradient(circle at 55% 58%,rgba(0,234,255,.42),rgba(0,80,130,.28),rgba(0,0,0,.15));
+  box-shadow:
+    0 0 60px #00eaff,
+    0 0 120px rgba(0,234,255,.35),
+    inset 0 0 75px rgba(0,234,255,.85),
+    inset -25px -35px 70px rgba(0,0,0,.45);
+  overflow:hidden;
+  animation:orbBreathe 4s ease-in-out infinite;
+}
+
+.orb:before{
+  content:"";
+  position:absolute;
+  inset:-45%;
+  background:
+    conic-gradient(
+      transparent,
+      rgba(0,234,255,.18),
+      transparent,
+      rgba(255,255,255,.18),
+      transparent,
+      rgba(0,255,220,.16),
+      transparent
+    );
+  animation:liquidSpin 10s linear infinite;
+}
+
+.orb:after{
+  content:"";
+  position:absolute;
+  left:18%;
+  top:18%;
+  width:45%;
+  height:45%;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.22),transparent 55%);
+  filter:blur(3px);
+}
+
+.orb.speaking{
+  animation:orbSpeak .32s infinite;
+}
+
+@keyframes orbBreathe{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-50%) scale(1.035)}
+}
+
+@keyframes orbSpeak{
+  0%{transform:translate(-50%,-50%) scale(1) skew(0deg)}
+  25%{transform:translate(-50%,-50%) scale(1.08,.94) skew(2deg)}
+  50%{transform:translate(-50%,-50%) scale(.95,1.11) skew(-2deg)}
+  75%{transform:translate(-50%,-50%) scale(1.06,.97) skew(1deg)}
+  100%{transform:translate(-50%,-50%) scale(1) skew(0deg)}
+}
+
+@keyframes liquidSpin{
+  to{transform:rotate(360deg)}
+}
+
+/* energy particles */
+.particle{
+  position:absolute;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#9fffff;
+  box-shadow:0 0 18px #00eaff;
+  opacity:.8;
+  animation:floatParticle 7s infinite ease-in-out;
+}
+
+.p1{left:18%;top:42%;animation-delay:0s}
+.p2{left:78%;top:38%;animation-delay:.8s}
+.p3{left:30%;top:77%;animation-delay:1.4s}
+.p4{left:66%;top:78%;animation-delay:2.1s}
+.p5{left:49%;top:18%;animation-delay:2.8s}
+.p6{left:15%;top:62%;animation-delay:3.4s}
+.p7{left:84%;top:60%;animation-delay:4s}
+
+@keyframes floatParticle{
+  0%,100%{transform:translateY(0) scale(.8);opacity:.3}
+  50%{transform:translateY(-35px) scale(1.4);opacity:1}
+}
+
+/* thin scan beam */
+.beam{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%) rotate(0deg);
+  width:720px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,234,255,.75),transparent);
+  box-shadow:0 0 20px #00eaff;
+  animation:beamSpin 8s linear infinite;
+  opacity:.55;
+}
+
+@keyframes beamSpin{
+  to{transform:translate(-50%,-50%) rotate(360deg)}
+}
+
+/* minimalist status */
+.status{
+  position:absolute;
+  left:50%;
+  bottom:124px;
+  transform:translateX(-50%);
+  font-size:13px;
+  letter-spacing:6px;
+  opacity:.55;
+  text-shadow:0 0 16px #00eaff;
+}
+
+/* hidden controls */
+.controls{
+  position:absolute;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  opacity:.1;
+  transition:.3s;
+  text-align:center;
+}
+
+.controls:hover{
+  opacity:1;
+}
+
+button{
+  background:rgba(0,0,0,.85);
+  color:#00eaff;
+  border:1px solid #00eaff;
+  padding:12px 22px;
+  margin:6px;
+  font-size:16px;
+  letter-spacing:2px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#00eaff;
+  color:#000;
+  box-shadow:0 0 25px #00eaff;
+}
+
+.hiddenInput{
+  opacity:0;
+  position:absolute;
+  pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="boot">
+  <h1>JARVIS</h1>
+  <p>HOLOGRAPHIC INTERFACE ONLINE</p>
+</div>
+
+<div class="title">JARVIS</div>
+
+<div class="stage">
+  <div id="mist" class="mist"></div>
+
+  <div class="beam"></div>
+
+  <div class="ring"></div>
+  <div class="ring2"></div>
+  <div class="ring3"></div>
+  <div class="ring4"></div>
+  <div class="ring5"></div>
+  <div class="ring6"></div>
+  <div class="ring7"></div>
+
+  <div class="particle p1"></div>
+  <div class="particle p2"></div>
+  <div class="particle p3"></div>
+  <div class="particle p4"></div>
+  <div class="particle p5"></div>
+  <div class="particle p6"></div>
+  <div class="particle p7"></div>
+
+  <div id="orb" class="orb"></div>
+</div>
+
+<div id="status" class="status">STANDBY</div>
+
+<div class="controls">
+  <button onclick="startJarvis()">START</button>
+  <button onclick="stopJarvis()">STOP</button>
+  <button onclick="fullscreen()">FULLSCREEN</button>
+  <button onclick="clearMemory()">MEMORY RESET</button>
+</div>
+
+<input id="userInput" class="hiddenInput">
+
+<script>
+let recognition=null;
+let listening=false;
+let restarting=false;
+let lastText="";
+let lastTime=0;
+
+const statusEl=document.getElementById("status");
+const orb=document.getElementById("orb");
+const mist=document.getElementById("mist");
+
+window.onload=()=>{
+  speechSynthesis.getVoices();
+  setTimeout(()=>{
+    speak("Jarvis online. Clean hologram interface active, Sir.");
+  },900);
+};
+
+speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+
+function status(text){
+  statusEl.innerText=text;
+}
+
+function activateMist(){
+  mist.classList.remove("active");
+  void mist.offsetWidth;
+  mist.classList.add("active");
+  setTimeout(()=>mist.classList.remove("active"),1500);
+}
+
+function speak(text){
+  if(!text)return;
+
+  speechSynthesis.cancel();
+
+  const s=new SpeechSynthesisUtterance(text);
+  const voices=speechSynthesis.getVoices();
+
+  s.voice =
+    voices.find(v=>v.name.includes("Microsoft Guy")) ||
+    voices.find(v=>v.name.includes("Microsoft Aria")) ||
+    voices.find(v=>v.name.includes("Google UK English Male")) ||
+    voices.find(v=>v.name.includes("Microsoft David")) ||
+    voices[0];
+
+  s.rate=.98;
+  s.pitch=.92;
+  s.volume=1;
+
+  orb.classList.add("speaking");
+  status("SPEAKING");
+
+  s.onend=()=>{
+    orb.classList.remove("speaking");
+    status(listening?"LISTENING":"READY");
+  };
+
+  s.onerror=()=>{
+    orb.classList.remove("speaking");
+    status(listening?"LISTENING":"READY");
+  };
+
+  speechSynthesis.speak(s);
+}
+
+function clean(text){
+  return text.toLowerCase()
+    .replace("hey jarvis","")
+    .replace("yo jarvis","")
+    .replace("okay jarvis","")
+    .replace("jarvis","")
+    .replace("please","")
+    .trim();
+}
+
+function startJarvis(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    alert("Use Chrome or Edge.");
+    return;
+  }
+
+  if(recognition){
+    try{recognition.stop()}catch(e){}
+  }
+
+  listening=true;
+  recognition=new SR();
+  recognition.lang="en-US";
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.maxAlternatives=1;
+
+  recognition.onstart=()=>{
+    status("LISTENING");
+  };
+
+  recognition.onresult=(e)=>{
+    const text=e.results[0][0].transcript.trim();
+    document.getElementById("userInput").value=text;
+
+    const now=Date.now();
+    if(text===lastText && now-lastTime<2500)return;
+
+    lastText=text;
+    lastTime=now;
+
+    if(text.toLowerCase().includes("jarvis")){
+      activateMist();
+      handleCommand(text);
+    }
+  };
+
+  recognition.onerror=(e)=>{
+    console.log("mic error:",e.error);
+    status("MIC ERROR");
+  };
+
+  recognition.onend=()=>{
+    if(listening && !restarting){
+      restarting=true;
+      setTimeout(()=>{
+        restarting=false;
+        try{recognition.start()}catch(e){}
+      },700);
+    }
+  };
+
+  try{recognition.start()}catch(e){}
+  speak("Listening mode active, Sir.");
+}
+
+function stopJarvis(){
+  listening=false;
+  restarting=false;
+
+  if(recognition){
+    try{recognition.stop()}catch(e){}
+  }
+
+  speechSynthesis.cancel();
+  orb.classList.remove("speaking");
+
+  status("STOPPED");
+  speak("Jarvis stopped, Sir.");
+}
+
+function handleCommand(text){
+  const command=clean(text);
+  status("PROCESSING");
+
+  if(command.includes("system check")){
+    speak("All systems are stable. Voice, hologram, web, memory, and launch systems are ready.");
+    return;
+  }
+
+  if(command.includes("open youtube")){
+    speak("Opening YouTube.");
+    window.open("https://youtube.com","_blank");
+    return;
+  }
+
+  if(command.includes("search youtube for")){
+    const q=command.split("search youtube for")[1].trim();
+    speak("Searching YouTube.");
+    window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(q),"_blank");
+    return;
+  }
+
+  if(command.includes("play")&&command.includes("youtube")){
+    const q=command.replace("play","").replace("on youtube","").trim();
+    speak("Pulling that up on YouTube.");
+    window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(q),"_blank");
+    return;
+  }
+
+  if(command.includes("search google for")){
+    const q=command.split("search google for")[1].trim();
+    speak("Searching Google.");
+    window.open("https://www.google.com/search?q="+encodeURIComponent(q),"_blank");
+    return;
+  }
+
+  if(command.includes("open spotify"))return launch("spotify");
+  if(command.includes("open google"))return launch("google");
+  if(command.includes("open gmail"))return launch("gmail");
+  if(command.includes("open chatgpt"))return launch("chatgpt");
+  if(command.includes("open discord"))return launch("discord");
+  if(command.includes("open twitch"))return launch("twitch");
+  if(command.includes("open netflix"))return launch("netflix");
+  if(command.includes("open weather"))return launch("weather");
+  if(command.includes("open ps remote")||command.includes("remote play"))return launch("psremote");
+
+  if(command.includes("time")){
+    speak("It is "+new Date().toLocaleTimeString()+", Sir.");
+    return;
+  }
+
+  if(command.includes("date")){
+    speak("Today is "+new Date().toLocaleDateString()+", Sir.");
+    return;
+  }
+
+  if(command.includes("fullscreen")){
+    fullscreen();
+    return;
+  }
+
+  if(command.includes("clear memory")){
+    clearMemory();
+    return;
+  }
+
+  if(command.includes("stop talking")){
+    speechSynthesis.cancel();
+    orb.classList.remove("speaking");
+    status("READY");
+    return;
+  }
+
+  askAI(text);
+}
+
+async function askAI(message){
+  status("THINKING");
+  activateMist();
+
+  try{
+    const res=await fetch("http://localhost:3000/ask",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message})
+    });
+
+    const data=await res.json();
+
+    speak(data.reply || "I heard you, Sir.");
+
+  }catch(e){
+    speak("Server connection is down, Sir.");
+    status("SERVER ERROR");
+  }
+}
+
+async function launch(app){
+  status("LAUNCHING");
+  activateMist();
+
+  try{
+    const res=await fetch("http://localhost:3000/launch",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({app})
+    });
+
+    const data=await res.json();
+
+    speak(data.reply);
+
+  }catch(e){
+    speak("Launch system is down, Sir.");
+  }
+}
+
+async function clearMemory(){
+  activateMist();
+
+  try{
+    const res=await fetch("http://localhost:3000/clear-memory",{method:"POST"});
+    const data=await res.json();
+    speak(data.reply);
+  }catch(e){
+    speak("Memory system failed, Sir.");
+  }
+}
+
+function fullscreen(){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen();
+    speak("Fullscreen activated.");
+  }
+}
+</script>
+
+</body>
+</html>
