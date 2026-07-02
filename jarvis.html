@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>JARVIS CLEAN HOLOGRAM</title>
+<title>J.A.R.V.I.S.</title>
 <style>
 *{box-sizing:border-box}
 
@@ -352,6 +352,36 @@ button:hover{
   position:absolute;
   pointer-events:none;
 }
+
+.textDock{
+  position:absolute;
+  left:50%;
+  bottom:90px;
+  transform:translateX(-50%);
+  display:flex;
+  gap:8px;
+  opacity:.15;
+  transition:.3s;
+}
+
+.textDock:hover,.textDock:focus-within{
+  opacity:1;
+}
+
+#textInput{
+  background:rgba(0,0,0,.85);
+  border:1px solid #00eaff;
+  color:#00eaff;
+  padding:10px 14px;
+  font-size:14px;
+  letter-spacing:1px;
+  width:280px;
+  outline:none;
+}
+
+#textInput::placeholder{
+  color:rgba(0,234,255,.4);
+}
 </style>
 </head>
 
@@ -397,6 +427,11 @@ button:hover{
   <button onclick="clearMemory()">MEMORY RESET</button>
 </div>
 
+<div class="textDock">
+  <input id="textInput" placeholder="Type a command, sir..." onkeydown="if(event.key==='Enter')submitText()">
+  <button onclick="submitText()">SEND</button>
+</div>
+
 <input id="userInput" class="hiddenInput">
 
 <script>
@@ -410,10 +445,12 @@ const statusEl=document.getElementById("status");
 const orb=document.getElementById("orb");
 const mist=document.getElementById("mist");
 
+const API_BASE=location.protocol==="file:" ? "http://localhost:3000" : "";
+
 window.onload=()=>{
   speechSynthesis.getVoices();
   setTimeout(()=>{
-    speak("Jarvis online. Clean hologram interface active, Sir.");
+    speak("At your service, sir. All systems online.");
   },900);
 };
 
@@ -529,7 +566,7 @@ function startJarvis(){
   };
 
   try{recognition.start()}catch(e){}
-  speak("Listening mode active, Sir.");
+  speak("Listening mode active, sir.");
 }
 
 function stopJarvis(){
@@ -544,7 +581,16 @@ function stopJarvis(){
   orb.classList.remove("speaking");
 
   status("STOPPED");
-  speak("Jarvis stopped, Sir.");
+  speak("Standing by, sir.");
+}
+
+function submitText(){
+  const input=document.getElementById("textInput");
+  const text=input.value.trim();
+  if(!text)return;
+  input.value="";
+  activateMist();
+  handleCommand(text);
 }
 
 function handleCommand(text){
@@ -580,6 +626,14 @@ function handleCommand(text){
     const q=command.split("search google for")[1].trim();
     speak("Searching Google.");
     window.open("https://www.google.com/search?q="+encodeURIComponent(q),"_blank");
+    return;
+  }
+
+  if(command.includes("search the web for")||command.includes("look up")){
+    const q=command.includes("search the web for")
+      ? command.split("search the web for")[1].trim()
+      : command.split("look up")[1].trim();
+    searchWeb(q);
     return;
   }
 
@@ -628,7 +682,7 @@ async function askAI(message){
   activateMist();
 
   try{
-    const res=await fetch("http://localhost:3000/ask",{
+    const res=await fetch(API_BASE+"/ask",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({message})
@@ -636,10 +690,31 @@ async function askAI(message){
 
     const data=await res.json();
 
-    speak(data.reply || "I heard you, Sir.");
+    speak(data.reply || "I heard you, sir.");
 
   }catch(e){
-    speak("Server connection is down, Sir.");
+    speak("Server connection is down, sir.");
+    status("SERVER ERROR");
+  }
+}
+
+async function searchWeb(query){
+  status("SEARCHING");
+  activateMist();
+
+  try{
+    const res=await fetch(API_BASE+"/search",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({query})
+    });
+
+    const data=await res.json();
+
+    speak(data.reply || "I couldn't find anything on that, sir.");
+
+  }catch(e){
+    speak("Search systems are down, sir.");
     status("SERVER ERROR");
   }
 }
@@ -649,7 +724,7 @@ async function launch(app){
   activateMist();
 
   try{
-    const res=await fetch("http://localhost:3000/launch",{
+    const res=await fetch(API_BASE+"/launch",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({app})
@@ -660,7 +735,7 @@ async function launch(app){
     speak(data.reply);
 
   }catch(e){
-    speak("Launch system is down, Sir.");
+    speak("Launch system is down, sir.");
   }
 }
 
@@ -668,11 +743,11 @@ async function clearMemory(){
   activateMist();
 
   try{
-    const res=await fetch("http://localhost:3000/clear-memory",{method:"POST"});
+    const res=await fetch(API_BASE+"/clear-memory",{method:"POST"});
     const data=await res.json();
     speak(data.reply);
   }catch(e){
-    speak("Memory system failed, Sir.");
+    speak("Memory system failed, sir.");
   }
 }
 
