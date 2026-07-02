@@ -1,6 +1,6 @@
 # J.A.R.V.I.S.
 
-A browser-based AI assistant inspired by Tony Stark's J.A.R.V.I.S. from Iron Man: a holographic voice interface backed by an Express server that talks to OpenAI (and optionally Tavily for live web search).
+A browser-based AI assistant inspired by Tony Stark's J.A.R.V.I.S. from Iron Man: a holographic voice interface backed by an Express server that talks to Claude (and optionally Tavily for live web search).
 
 Fan project, not affiliated with Marvel/Disney.
 
@@ -22,7 +22,8 @@ Fan project, not affiliated with Marvel/Disney.
    ```
    cp .env.example .env
    ```
-   - `OPENAI_API_KEY` is required for conversational replies.
+   - `ANTHROPIC_API_KEY` is required for conversational replies (get one at [console.anthropic.com](https://console.anthropic.com)).
+   - `CLAUDE_MODEL` is optional; defaults to `claude-opus-4-8`.
    - `TAVILY_API_KEY` is optional; enables the "search the web for" command.
 3. Start the server:
    ```

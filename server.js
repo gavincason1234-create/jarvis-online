@@ -1,4 +1,4 @@
-const OpenAI = require("openai");
+const Anthropic = require("@anthropic-ai/sdk");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -11,12 +11,13 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 const PORT = process.env.PORT || 3000;
+const CLAUDE_MODEL = process.env.CLAUDE_MODEL || "claude-opus-4-8";
 
-if (!process.env.OPENAI_API_KEY) {
-  console.warn("WARNING: OPENAI_API_KEY is not set. Set it in a .env file (see .env.example).");
+if (!process.env.ANTHROPIC_API_KEY) {
+  console.warn("WARNING: ANTHROPIC_API_KEY is not set. Set it in a .env file (see .env.example).");
 }
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || "unset" });
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || "unset" });
 
 let tavilyPromise = null;
 function getTavily() {
@@ -48,17 +49,20 @@ Personality:
 app.post("/ask", async (req, res) => {
   try {
     const userMessage = req.body.message || "Hello";
-    memory.push("Sir: " + userMessage);
-    memory = memory.slice(-18);
+    memory.push({ role: "user", content: userMessage });
 
-    const response = await client.responses.create({
-      model: process.env.OPENAI_MODEL || "gpt-5.5-pro",
-      instructions: JARVIS_INSTRUCTIONS,
-      input: memory.join("\n") + "\nJarvis:"
+    const response = await client.messages.create({
+      model: CLAUDE_MODEL,
+      max_tokens: 1024,
+      system: JARVIS_INSTRUCTIONS,
+      messages: memory
     });
 
-    memory.push("Jarvis: " + response.output_text);
-    res.json({ reply: response.output_text });
+    const reply = response.content.find((b) => b.type === "text")?.text || "I heard you, sir.";
+    memory.push({ role: "assistant", content: reply });
+    memory = memory.slice(-18);
+
+    res.json({ reply });
 
   } catch (error) {
     console.log(error);
@@ -84,13 +88,15 @@ app.post("/search", async (req, res) => {
       .map((r, i) => `${i + 1}. ${r.title}: ${r.content}`)
       .join("\n");
 
-    const response = await client.responses.create({
-      model: process.env.OPENAI_MODEL || "gpt-5.5-pro",
-      instructions: JARVIS_INSTRUCTIONS + "\nSummarize the following search results concisely for the user, in your own voice.",
-      input: `Query: ${query}\n\nSearch results:\n${summarySource}`
+    const response = await client.messages.create({
+      model: CLAUDE_MODEL,
+      max_tokens: 1024,
+      system: JARVIS_INSTRUCTIONS + "\nSummarize the following search results concisely for the user, in your own voice.",
+      messages: [{ role: "user", content: `Query: ${query}\n\nSearch results:\n${summarySource}` }]
     });
 
-    res.json({ reply: response.output_text });
+    const reply = response.content.find((b) => b.type === "text")?.text || "I couldn't find anything on that, sir.";
+    res.json({ reply });
 
   } catch (error) {
     console.log(error);
@@ -140,7 +146,7 @@ app.post("/clear-memory", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  res.json({ status: "online", hasOpenAI: !!process.env.OPENAI_API_KEY, hasSearch: !!process.env.TAVILY_API_KEY });
+  res.json({ status: "online", hasClaude: !!process.env.ANTHROPIC_API_KEY, hasSearch: !!process.env.TAVILY_API_KEY });
 });
 
 app.get("/", (req, res) => {
