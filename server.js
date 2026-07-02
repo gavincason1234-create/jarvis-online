@@ -52,7 +52,7 @@ app.post("/ask", async (req, res) => {
     memory = memory.slice(-18);
 
     const response = await client.responses.create({
-      model: "gpt-4.1-mini",
+      model: process.env.OPENAI_MODEL || "gpt-5.5-pro",
       instructions: JARVIS_INSTRUCTIONS,
       input: memory.join("\n") + "\nJarvis:"
     });
@@ -85,7 +85,7 @@ app.post("/search", async (req, res) => {
       .join("\n");
 
     const response = await client.responses.create({
-      model: "gpt-4.1-mini",
+      model: process.env.OPENAI_MODEL || "gpt-5.5-pro",
       instructions: JARVIS_INSTRUCTIONS + "\nSummarize the following search results concisely for the user, in your own voice.",
       input: `Query: ${query}\n\nSearch results:\n${summarySource}`
     });
